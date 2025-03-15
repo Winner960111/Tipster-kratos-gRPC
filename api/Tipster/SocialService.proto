@@ -1,0 +1,580 @@
+syntax = "proto3";
+
+package api.Tipster;
+
+option go_package = "Tipster/api/Tipster;Tipster";
+option java_multiple_files = true;
+option java_package = "api.Tipster";
+import "google/protobuf/timestamp.proto";
+
+service SocialService {
+	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+	rpc GetUser (GetUserRequest) returns (GetUserResponse);
+	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
+	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+	rpc ListUsers (ListUserRequest) returns (ListUserResponse);
+	rpc FollowTipster (FollowTipsterRequest) returns (FollowTipsterResponse);
+	rpc UnfollowTipster (UnFollowTipsterRequest) returns (UnfollowTipsterResponse);
+  
+	rpc CreateTip (CreateTipRequest) returns (CreateTipResponse);
+	rpc GetTip (GetTipRequest) returns (GetTipResponse);
+	rpc UpdateTip (UpdateTipRequest) returns (UpdateTipResponse);
+	rpc DeleteTip (DeleteTipRequest) returns (DeleteTipResponse);
+	rpc ListTips (ListTipsRequest) returns (ListTipsResponse);
+	rpc ShareTip (ShareTipRequest) returns (ShareTipResponse);
+	rpc LikeTip (LikeTipRequest) returns (LikeTipResponse);
+	rpc UnlikeTip (UnlikeTipRequest) returns (UnlikeTipResponse);
+  
+	rpc CommentOnTip (CommentOnTipRequest) returns (CommentOnTipResponse);
+	rpc UpdateComment (UpdateCommentRequest) returns (UpdateCommentResponse);
+	rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentResponse);
+	rpc ListTipComments (ListTipCommentsRequest) returns (ListTipCommentsResponse);
+	rpc LikeComment (LikeCommentRequest) returns (LikeCommentResponse);
+	rpc UnlikeComment (UnlikeCommentRequest) returns (UnlikeCommentResponse);
+	rpc ReplyComment (ReplyCommentRequest) returns (ReplyCommentResponse);
+	rpc ListCommentReplies (ListCommentRepliesRequest) returns (ListCommentRepliesResponse);
+	rpc ListComments (ListCommentsRequest) returns (ListCommentsResponse);
+	
+	rpc ListFollowingFeed (ListFollowingFeedRequest) returns (ListFollowingFeedResponse);
+  }
+
+// -------------------
+// Update Tip Comment
+// -------------------
+message UpdateCommentRequest {
+  string CommentId = 1;
+  string Content = 2;
+}
+
+message UpdateCommentResponse {
+  string Code = 1;
+  string Msg = 2;
+}
+// -------------------
+// -------------------
+// Delete Tip Comment
+// -------------------
+message DeleteCommentRequest {
+  string CommentId = 1;
+}
+
+message DeleteCommentResponse {
+  string Code = 1;
+  string Msg = 2;
+}
+// -------------------
+// Create Tip
+// -------------------
+message CreateTipRequest {
+  string TipsterId = 1;
+  string Title = 2;
+  string Content = 3;
+  repeated string Tags = 4;
+  string ShareType = 5;
+}
+
+message CreateTipResponse {
+  string Code = 1;
+  string Msg = 2;
+  TipData Data = 3;
+}
+
+// -------------------
+// Get Tip
+// -------------------
+message GetTipRequest {
+  string TipId = 1;
+}
+
+message GetTipResponse {
+  string Code = 1;
+  string Msg = 2;
+  TipData Data = 3;
+}
+
+// -------------------
+// Update Tip
+// -------------------
+message UpdateTipRequest {
+  string TipId = 1;
+  string Title = 2;
+  string Content = 3;
+  repeated string Tags = 4;
+  string ShareType = 5;
+}
+
+message UpdateTipResponse {
+  string Code = 1;
+  string Msg = 2;
+}
+
+// -------------------
+// Delete Tip
+// -------------------
+message DeleteTipRequest {
+  string TipId = 1;
+}
+
+message DeleteTipResponse {
+  string Code = 1;
+  string Msg = 2;
+}
+
+// -------------------
+// List Tips
+// -------------------
+message ListTipsRequest {
+  int32 PageSize = 1;
+  string NextCursor = 2;
+  string TipsterId = 3; // Optional: to filter tips by tipster
+}
+
+message ListTipsResponse {
+  string Code = 1;
+  string Msg = 2;
+  ListTipsData Data = 3;
+
+  message ListTipsData {
+    repeated TipData Tips = 1;
+    string NextCursor = 2;
+  }
+}
+
+// -------------------
+// Common Tip Data Structure
+// -------------------
+message TipData {
+  string TipId = 1;
+  string TipsterId = 2;
+  string Title = 3;
+  string Content = 4;
+  repeated string Tags = 5;
+  repeated UserDetail Likes = 6;
+  repeated UserDetail Unlikes = 7;
+  google.protobuf.Timestamp CreatedAt = 8;
+  google.protobuf.Timestamp UpdatedAt = 9;
+  string ShareType = 10;
+}
+
+// -------------------
+// Create User
+// -------------------
+message CreateUserRequest {
+  string UserName = 1;
+  string Email = 2;
+  string Password = 3;
+  repeated string Tags = 4;
+}
+
+// User registration response message
+message CreateUserResponse {
+  string Code = 1;
+  string Msg = 2;
+  UserData Data = 3;
+
+  // User data message
+  message UserData {
+    string UserId = 1;
+    string UserName = 2;
+    string Email = 3;
+    repeated string Tags = 4;
+    google.protobuf.Timestamp CreatedAt = 5;
+    google.protobuf.Timestamp UpdatedAt = 6;
+    repeated UserDetail Followers = 7;
+    repeated UserDetail Followings = 8;
+  }
+}
+
+message UserDetail {
+  string Id = 1;
+  string UserName = 2;
+}
+
+// -------------------
+// Get User
+// -------------------
+message GetUserRequest {
+  string UserId = 1;
+}
+
+message GetUserResponse {
+  string Code = 1;
+  string Msg = 2;
+  CreateUserResponse.UserData Data = 3;
+}
+
+// -------------------
+// Update User
+// -------------------
+message UpdateUserRequest {
+  string UserId = 1;
+  string UserName = 2;
+  string Email = 3;
+  repeated string Tags = 4;
+}
+
+message UpdateUserResponse {
+  string Code = 1;
+  string Msg = 2;
+}
+
+// -------------------
+// Delete User
+// -------------------
+message DeleteUserRequest {
+  string UserId = 1;
+}
+
+message DeleteUserResponse {
+  string Code = 1;
+  string Msg = 2;
+}
+
+// -------------------
+// List User
+// -------------------
+message ListUserRequest {
+  int32 PageSize = 1;
+  string NextCursor = 2;
+}
+
+message ListUserResponse {
+  string Code = 1;
+  string Msg = 2;
+  ListUsersData Data = 3;
+
+  message ListUsersData {
+    repeated CreateUserResponse.UserData Users = 1;
+    string NextCursor = 2;
+  }
+}
+
+// -------------------
+//  Like / Unlike Tip
+// -------------------
+message LikeTipRequest {
+  // The user who performs the "like" action
+  string UserId = 1; 
+  // The Tip ID to be liked
+  string TipId  = 2;
+}
+
+message LikeTipResponse {
+  // Standard three-layer response format
+  string Code = 1;
+  string Msg  = 2;
+  LikeTipData Data = 3;
+
+  message LikeTipData {
+    // Total number of likes after the action
+    int32 TotalLikes = 1;
+    // Indicates whether the current user has liked the tip (usually true if it's a Like operation)
+    bool  UserLiked  = 2;
+  }
+}
+
+message UnlikeTipRequest {
+  // The user who performs the "unlike" action
+  string UserId = 1;
+  // The Tip ID from which the user removes the "like"
+  string TipId  = 2;
+}
+
+// For Unlike responses, we can reuse LikeTipResponse structure if the logic is the same.
+// You can alias it if you want separate message names.
+message LikeTipResponseAlias {
+  string Code = 1;
+  string Msg  = 2;
+  LikeTipData Data = 3;
+
+  message LikeTipData {
+    int32 TotalLikes = 1;
+    // For "unlike", this will typically be false
+    bool  UserLiked  = 2;
+  }
+}
+message UnlikeTipResponse {
+  string Code = 1;
+  string Msg  = 2;
+  UnLikeTipData Data = 3;
+
+  message UnLikeTipData {
+    int32 TotalUnLikes = 1;
+    // For "unlike", this will typically be false
+    bool  UserUnLiked  = 2;
+  }
+}
+
+
+// -------------------
+//  Comment / DeleteComment
+// -------------------
+message CommentInfo {
+  string CommentId = 1;
+  string TipId = 2;
+  string UserId = 3;
+  string ParentId = 4;
+  string Content = 5;
+  google.protobuf.Timestamp CreatedAt = 6;
+  google.protobuf.Timestamp UpdatedAt = 7;
+  repeated UserDetail Likes = 8;
+  repeated UserDetail Unlikes = 9;
+}
+
+message CommentOnTipRequest {
+  string UserId = 1;
+  string TipId = 2;
+  string ParentId = 3; // Optional: for replies to comments
+  string Content = 4;
+}
+
+message CommentOnTipResponse {
+  string Code = 1;
+  string Msg = 2;
+  CommentInfo Data = 3;
+}
+
+
+// -------------------
+//  ListTipComments
+// -------------------
+message ListTipCommentsRequest {
+  // The Tip ID for which we list comments
+  string TipId      = 1;
+}
+
+message ListTipCommentsResponse {
+  string Code = 1;
+  string Msg = 2;
+  repeated CommentInfo Comments = 3;
+}
+
+
+message LikeCommentRequest {
+  string UserId = 1;
+  string CommentId = 2;
+}
+
+message LikeCommentResponse {
+  string Code = 1;
+  string Msg = 2;
+  LikeCommentData Data = 3;
+
+  message LikeCommentData {
+    int32 TotalLikes = 1;
+    bool UserLiked = 2;
+  }
+}
+
+message UnlikeCommentRequest {
+  string UserId = 1;
+  string CommentId = 2;
+}
+
+message UnlikeCommentResponse {
+  string Code = 1;
+  string Msg = 2;
+  UnlikeCommentData Data = 3;
+
+  message UnlikeCommentData {
+    int32 TotalUnLikes = 1;
+    bool UserUnLiked = 2;
+  }
+}
+
+// -------------------
+//  ReplyComment / ListCommentReplies (Thread-like mode)
+// -------------------
+message ReplyCommentRequest {
+  // The user who replies
+  string UserId         = 1;
+  // The comment ID to which this reply is attached
+  string ParentCommentId= 2;
+  // The reply content
+  string Content        = 3; 
+}
+
+message ReplyCommentResponse {
+  string Code = 1;
+  string Msg  = 2;
+  ReplyData Data = 3;
+
+  message ReplyData {
+    // The unique ID of the reply
+    string ReplyId        = 1;
+    // The parent comment ID
+    string ParentCommentId= 2;
+    // The user who created this reply
+    string UserId         = 3;
+    // The reply text
+    string Content        = 4;
+    // Timestamp
+    google.protobuf.Timestamp DateCreated      = 5;
+  }
+}
+
+message ListCommentRepliesRequest {
+  // The parent comment ID for which we want to list replies
+  string ParentCommentId= 1;
+}
+
+message ListCommentRepliesResponse {
+  string Code = 1;
+  string Msg  = 2;
+  repeated ReplyInfo Replies = 3;
+}
+
+message ReplyInfo {
+  string ReplyId        = 1;
+  string ParentCommentId= 2;
+  string UserId         = 3;
+  string Content        = 4;
+  google.protobuf.Timestamp DateCreated      = 5;
+  repeated UserDetail Likes = 6;
+  repeated UserDetail Unlikes = 7;
+  
+}
+
+//--------------------
+//  ListComments
+//--------------------
+message ListCommentsRequest {
+ int32 PageSize = 1;
+ string NextCursor = 2;
+}
+
+message ListCommentsResponse {
+  string Code = 1;
+  string Msg = 2;
+  repeated CommentInfo Comments = 3;
+}
+
+// -------------------
+//  ShareTip
+// -------------------
+message ShareTipRequest {
+  // The user who shares the tip
+  string UserId   = 1;
+  // The Tip ID to share
+  string TipId    = 2;
+  // e.g. "PUBLIC", "FRIENDS_ONLY", "STORY"
+  string ShareType = 3; 
+}
+
+message ShareTipResponse {
+  string Code = 1;
+  string Msg  = 2;
+}
+
+
+// -------------------
+//  Follow / Unfollow Tipster
+// -------------------
+message FollowTipsterRequest {
+  // The user who follows
+  string UserId    = 1;
+  // The Tipster ID to follow
+  string TipsterId = 2;
+}
+
+message FollowTipsterResponse {
+  string Code = 1;
+  string Msg  = 2;
+  FollowData Data = 3;
+
+  message FollowData {
+    // Indicates if the user is now following this tipster
+    bool   IsFollowing = 1;
+    // The tipster's ID
+    string TipsterId   = 2;
+    // The user who followed
+    string UserId      = 3;
+  }
+}
+
+// If UnfollowTipster needs a similar structure, you can alias or duplicate:
+
+message UnFollowTipsterRequest {
+  // The user who follows
+  string UserId    = 1;
+  // The Tipster ID to follow
+  string TipsterId = 2;
+}
+
+message UnfollowTipsterResponse {
+  string Code = 1;
+  string Msg  = 2;
+  UnfollowData Data = 3;
+
+  message UnfollowData {
+    // Indicates if the user is now following this tipster (usually false for unfollow)
+    bool   IsFollowing = 1;
+    // The tipster's ID
+    string TipsterId   = 2;
+    // The user who unfollowed
+    string UserId      = 3;
+  }
+}
+
+
+// -------------------
+//  ListFollowingFeed
+// -------------------
+message ListFollowingFeedRequest {
+  // The user whose feed we want
+  string UserId     = 1;
+  // Number of items to retrieve each time
+  int32  PageSize   = 2;
+  // Cursor for pagination
+  string NextCursor = 3;
+}
+
+message ListFollowingFeedResponse {
+  string Code = 1;
+  string Msg  = 2;
+  ListFollowingFeedData Data = 3;
+
+  message ListFollowingFeedData {
+    repeated FeedItem Items = 1;
+    // Next cursor for fetching additional feed items
+    string NextCursor       = 2;
+  }
+}
+
+/**
+ * Defines different possible feed actions.
+ */
+ enum FeedActionType {
+    // Default or unspecified action
+    FEED_ACTION_UNSPECIFIED = 0;
+  
+    // The user posted a tip
+    FEED_ACTION_POST_TIP = 1;
+  
+    // The user liked a tip
+    FEED_ACTION_LIKE_TIP = 2;
+  
+    // The user commented on a tip
+    FEED_ACTION_COMMENT_TIP = 3;
+  
+    // The user shared a tip
+    FEED_ACTION_SHARE_TIP = 4;
+  
+    // Add more actions if needed
+  }
+
+// Represents a single feed event or item
+message FeedItem {
+  // A unique identifier for this feed item
+  string FeedId    = 1;
+  // The user who performed this action
+  string AuthorId  = 2;
+  // E.g. "POST_TIP", "LIKE_TIP", "COMMENT_TIP", "SHARE_TIP"
+  FeedActionType Action    = 3;
+  // The target ID associated with this feed item (e.g., TipId)
+  string TargetId  = 4;
+  // The timestamp of when this feed action occurred
+  google.protobuf.Timestamp DateCreated = 5;
+  // Optional extra field to store text or additional info
+  string ExtraInfo = 6;  
+}
